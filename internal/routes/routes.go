@@ -16,11 +16,12 @@ func Register(router *gin.Engine, db *gorm.DB, redisClient *redisService.Client,
 	// Create services
 	userService := services.NewUserService(db)
 	jwtService := auth.NewJWTService(&cfg.JWT)
+	taskService := services.NewTaskService(db)
 
 	// Create handlers with dependencies
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(userService, jwtService)
-	taskHandler := handlers.NewTaskHandler(db)
+	taskHandler := handlers.NewTaskHandler(taskService, userService)
 
 	// Setup middleware
 	middleware.Setup(router, cfg, jwtService)

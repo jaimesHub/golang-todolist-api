@@ -41,10 +41,10 @@
 - [ ] Setup secure password handling
 
 ## Task Management
-- [] Create task model
-- [] Implement CRUD operations for tasks
-- [] Implement task assignment functionality
-- [] Implement task status tracking
+- [x] Create task model
+- [x] Implement CRUD operations for tasks
+- [x] Implement task assignment functionality
+- [x] Implement task status tracking
 
 ## Queue Processing with Redis
 - [] Setup Redis connection
