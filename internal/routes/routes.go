@@ -4,14 +4,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jaimesHub/golang-todo-app/internal/handlers"
 	"github.com/jaimesHub/golang-todo-app/internal/middleware"
-	"github.com/jaimesHub/golang-todo-app/internal/services/redis"
+	"github.com/jaimesHub/golang-todo-app/internal/services"
+	redisService "github.com/jaimesHub/golang-todo-app/internal/services/redis"
 	"gorm.io/gorm"
 )
 
 // Register sets up all API routes
-func Register(router *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
+func Register(router *gin.Engine, db *gorm.DB, redisClient *redisService.Client) {
+	// Create services
+	userService := services.NewUserService(db)
+
 	// Create handlers with dependencies
-	userHandler := handlers.NewUserHandler(db)
+	userHandler := handlers.NewUserHandler(userService)
 	taskHandler := handlers.NewTaskHandler(db)
 	authHandler := handlers.NewAuthHandler(db)
 
@@ -24,7 +28,7 @@ func Register(router *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		// Auth routes - no authentication required
 		auth := v1.Group("/auth")
 		{
-			auth.POST("/register", authHandler.Register)
+			auth.POST("/register", userHandler.Register)
 			auth.POST("/login", authHandler.Login)
 			auth.POST("/refresh", authHandler.RefreshToken)
 		}

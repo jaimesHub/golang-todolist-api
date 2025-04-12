@@ -26,10 +26,10 @@
     - `chmod +x /home/user/golang-todo-app/scripts/run_migrations.sh`
 
 ## User Management System
-- [] Create user model
-- [] Implement user registration
-- [] Implement user profile management
-- [] Implement user activity logging
+- [x] Create user model
+- [x] Implement user registration
+- [x] Implement user profile management
+- [x] Implement user activity logging
 
 ## Authentication/Authorization
 - [] Implement JWT authentication
