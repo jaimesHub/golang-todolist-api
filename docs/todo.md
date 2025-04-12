@@ -19,10 +19,11 @@
 - [x] Create README.md with project overview
 
 ## Database Implementation
-- [] Setup PostgreSQL with Supabase configuration
-- [] Create database models using GORM
-- [] Implement database migrations
-- [] Create database connection utilities
+- [x] Setup PostgreSQL with Supabase configuration
+- [x] Create database models using GORM
+- [x] Implement database migrations
+- [x] Create database connection utilities
+    - `chmod +x /home/user/golang-todo-app/scripts/run_migrations.sh`
 
 ## User Management System
 - [] Create user model
