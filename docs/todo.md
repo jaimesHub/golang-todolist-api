@@ -47,9 +47,9 @@
 - [x] Implement task status tracking
 
 ## Queue Processing with Redis
-- [] Setup Redis connection
-- [] Implement basic queue structure
-- [] Create worker for processing queue items
+- [x] Setup Redis connection
+- [x] Implement basic queue structure
+- [x] Create worker for processing queue items
 
 ## Logging and Monitoring
 - [] Setup structured logging

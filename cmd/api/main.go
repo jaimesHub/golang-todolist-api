@@ -3,13 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jaimesHub/golang-todo-app/internal/config"
 	"github.com/jaimesHub/golang-todo-app/internal/database"
 	"github.com/jaimesHub/golang-todo-app/internal/middleware"
 	"github.com/jaimesHub/golang-todo-app/internal/routes"
+	"github.com/jaimesHub/golang-todo-app/internal/services/auth"
+	"github.com/jaimesHub/golang-todo-app/internal/services/queue"
 	"github.com/jaimesHub/golang-todo-app/internal/services/redis"
+	"github.com/jaimesHub/golang-todo-app/internal/services/worker"
 	"github.com/joho/godotenv"
 )
 
@@ -44,14 +48,51 @@ func main() {
 		defer redisClient.Close()
 	}
 
+	// Initialize queue
+	taskQueue, err := queue.NewQueue(cfg.Redis)
+	if err != nil {
+		log.Printf("Warning: Failed to initialize task queue: %v", err)
+	} else {
+		defer taskQueue.Close()
+	}
+
+	// Initialize worker
+	taskWorker, err := worker.NewWorker(cfg.Redis, "tasks")
+	if err != nil {
+		log.Printf("Warning: Failed to initialize task worker: %v", err)
+	} else {
+		defer taskWorker.Close()
+
+		// Register task handlers
+		taskWorker.RegisterHandler("email_notification", func(task *queue.Task) error {
+			log.Printf("Processing email notification task: %v", task.Data)
+			// Simulate work
+			time.Sleep(1 * time.Second)
+			return nil
+		})
+
+		taskWorker.RegisterHandler("task_reminder", func(task *queue.Task) error {
+			log.Printf("Processing task reminder: %v", task.Data)
+			// Simulate work
+			time.Sleep(1 * time.Second)
+			return nil
+		})
+
+		// Start worker
+		taskWorker.Start()
+	}
+
+	// Initialize JWT service
+	jwtService := auth.NewJWTService(&cfg.JWT)
+
 	// Initialize Gin router
 	router := gin.Default()
 
 	// Apply middleware
-	middleware.Setup(router, cfg)
+	middleware.Setup(router, cfg, jwtService)
 
 	// Register routes
-	routes.Register(router, db, redisClient)
+	routes.Register(router, db, redisClient, cfg)
 
 	// Start server
 	serverAddr := fmt.Sprintf("%s:%d", cfg.Server.Host, cfg.Server.Port)
