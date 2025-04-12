@@ -2,22 +2,28 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jaimesHub/golang-todo-app/internal/config"
 	"github.com/jaimesHub/golang-todo-app/internal/handlers"
 	"github.com/jaimesHub/golang-todo-app/internal/middleware"
 	"github.com/jaimesHub/golang-todo-app/internal/services"
+	"github.com/jaimesHub/golang-todo-app/internal/services/auth"
 	redisService "github.com/jaimesHub/golang-todo-app/internal/services/redis"
 	"gorm.io/gorm"
 )
 
 // Register sets up all API routes
-func Register(router *gin.Engine, db *gorm.DB, redisClient *redisService.Client) {
+func Register(router *gin.Engine, db *gorm.DB, redisClient *redisService.Client, cfg *config.Config) {
 	// Create services
 	userService := services.NewUserService(db)
+	jwtService := auth.NewJWTService(&cfg.JWT)
 
 	// Create handlers with dependencies
 	userHandler := handlers.NewUserHandler(userService)
+	authHandler := handlers.NewAuthHandler(userService, jwtService)
 	taskHandler := handlers.NewTaskHandler(db)
-	authHandler := handlers.NewAuthHandler(db)
+
+	// Setup middleware
+	middleware.Setup(router, cfg, jwtService)
 
 	// Health check route
 	router.GET("/health", handlers.HealthCheck)
@@ -35,7 +41,7 @@ func Register(router *gin.Engine, db *gorm.DB, redisClient *redisService.Client)
 
 		// Protected routes - authentication required
 		protected := v1.Group("/")
-		protected.Use(middleware.AuthMiddleware())
+		protected.Use(middleware.AuthMiddleware(jwtService))
 		{
 			// User routes
 			users := protected.Group("/users")

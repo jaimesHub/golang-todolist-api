@@ -14,6 +14,7 @@
     - go mod init github.com/jaimesHub/golang-todo-app
 - [x] Install required Go packages (GORM, JWT, etc.)
     - go get -u gorm.io/gorm gorm.io/driver/postgres github.com/golang-jwt/jwt/v4 github.com/gin-gonic/gin github.com/go-redis/redis/v8 github.com/joho/godotenv github.com/google/uuid github.com/sirupsen/logrus
+    - `LATEST`: go get -u github.com/gin-gonic/gin@v1.8.1 github.com/golang-jwt/jwt/v4@v4.5.0 gorm.io/gorm@v1.24.5 gorm.io/driver/postgres@v1.4.8 github.com/go-redis/redis/v8@v8.11.5 github.com/joho/godotenv@v1.5.1 github.com/google/uuid@v1.3.0 github.com/sirupsen/logrus@v1.9.0
 - [x] Create main application file
 - [x] Setup basic configuration files
 - [x] Create README.md with project overview
@@ -32,10 +33,10 @@
 - [x] Implement user activity logging
 
 ## Authentication/Authorization
-- [] Implement JWT authentication
-- [] Setup middleware for authorization
-- [] Implement login functionality
-- [] Implement token refresh
+- [x] Implement JWT authentication
+- [x] Setup middleware for authorization
+- [x] Implement login functionality
+- [x] Implement token refresh
 - [ ] Implement role-based access control
 - [ ] Setup secure password handling
 
